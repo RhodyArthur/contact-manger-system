@@ -30,3 +30,17 @@ def validate_phone(phone):
         return False
     pattern = r'^\+?\d{10,15}$'
     return re.match(pattern, phone) is not None
+
+def validate_address(address):
+    return isinstance(address, str) and len(address) >= 3
+
+def validate_fields(name, email, phone, address):
+    if not validate_name(name):
+        raise ValueError("Invalid name: must be 2+ characters")
+    if not validate_email(email):
+        raise ValueError("Invalid email format")
+    if not validate_phone(phone):
+        raise ValueError("Invalid phone number format")
+    if not validate_address(address):
+        raise ValueError("Invalid address: must be 3+ characters")
+    return True
