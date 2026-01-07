@@ -4,3 +4,6 @@ class Contact:
         self.email = email
         self.phone = phone
         self.address = address
+
+class ContactBook(Contact):
+    pass
