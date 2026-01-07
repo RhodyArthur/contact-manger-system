@@ -1,4 +1,4 @@
-from ..validators.validators import validate_email, validate_name, validate_phone
+from validators.validators import validate_email, validate_name, validate_phone
 
 class Contact:
     def __init__(self, name: str, email: str, phone: str, address: str):
