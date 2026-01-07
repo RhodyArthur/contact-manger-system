@@ -1,5 +1,7 @@
 import json
 from ..exceptions.custom_exceptions import DuplicateContactError, ContactNotFoundError
+from ..validators.validators import validate_fields
+
 class ContactBook():
     def __init__(self):
         self.contacts = []
@@ -22,11 +24,23 @@ class ContactBook():
         print("Name\tEmail\tPhone\tAddress\n")
         result = ''
         for contact in self.contacts:
-            data = f"{contact["name"]}\t{contact["email"]}\t{contact["phone"]}\t{contact["address"]}\n"
+            data = f'{contact["name"]}\t{contact["email"]}\t{contact["phone"]}\t{contact["address"]}\n'
             result += data
         return result
     
-   
+    def add_contact(self, contact):
+        """add contact to contact list"""
+        for c in self.contacts:
+            if contact["name"] == c["name"] and contact["phone"] == c["phone"]:
+                raise DuplicateContactError("Contact already exist")
+        
+        validate_fields(contact["name"], contact["email"], contact["phone"], contact["address"])
+        self.contacts.append(contact)
+
+        with open('data/data.json', 'a') as f:
+            json.dump(self.contacts, f, indent=4)
+        return contact
+
 
 
 contact = ContactBook()
