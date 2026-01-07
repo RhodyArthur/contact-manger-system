@@ -1,6 +1,6 @@
 import json
-from ..exceptions.custom_exceptions import DuplicateContactError, ContactNotFoundError
-from ..validators.validators import validate_fields
+from exceptions.custom_exceptions import DuplicateContactError, ContactNotFoundError
+from validators.validators import validate_fields
 
 class ContactBook():
     def __init__(self):
@@ -21,10 +21,9 @@ class ContactBook():
         
     def list_contacts(self):
         """list all contacts"""
-        print("Name\tEmail\tPhone\tAddress\n")
         result = ''
         for contact in self.contacts:
-            data = f'{contact["name"]}\t{contact["email"]}\t{contact["phone"]}\t{contact["address"]}\n'
+            data = f'Name: {contact["name"]}, Email: {contact["email"]}, Phone: {contact["phone"]}, Address: {contact["address"]}\n'
             result += data
         return result
     
@@ -37,7 +36,7 @@ class ContactBook():
         validate_fields(contact["name"], contact["email"], contact["phone"], contact["address"])
         self.contacts.append(contact)
 
-        with open('data/data.json', 'a') as f:
+        with open('data/data.json', 'w') as f:
             json.dump(self.contacts, f, indent=4)
         return contact
 
