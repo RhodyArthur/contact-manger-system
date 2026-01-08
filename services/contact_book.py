@@ -1,4 +1,5 @@
 import json
+import csv
 from exceptions.custom_exceptions import DuplicateContactError, ContactNotFoundError
 from validators.validators import validate_fields
 
@@ -15,7 +16,8 @@ class ContactBook():
                 self.contacts = json.load(f)
                 return self.contacts
         except FileNotFoundError:
-            return 'File not found'
+            self.contacts = []
+            return self.contacts
         except json.JSONDecodeError:
             return 'Invalid JSON file'
         
@@ -39,6 +41,38 @@ class ContactBook():
         with open('data/data.json', 'w') as f:
             json.dump(self.contacts, f, indent=4)
         return contact
+
+
+    def search_contact_by_name(self, name=None, phone=None):
+        result = []
+        for contact in self.contacts:
+            if name.lower() in contact.get('name').lower() or phone in contact.get('phone'):
+                result.append(contact)
+
+        if len(result) == 0:
+            raise ContactNotFoundError("Contact does not exist")
+        return result
+    
+    def export_to_csv(self, filename="data/data.csv"):
+        header = ["name", "email", "phone", "address"]
+
+        with open(filename, 'w', newline="") as f:
+            writer = csv.DictWriter(f, fieldnames=header)
+            writer.writeheader()
+            writer.writerows(self.contacts)
+        
+
+    
+    def update_contact(self, name, phone, new_name=None, new_email=None, new_phone=None, new_address=None):
+        
+        for contact in self.contacts:
+            if name == contact.get("name") and phone == contact.get("phone"):
+                validate_fields(name, email, phone, address)
+                contact["name"] = contact["name"] or  name
+                contact["email"] = contact["email"] | email
+                contact["phone"] = contact["phone"] | phone
+                contact["address"] = contact["address"] | address
+        raise ContactNotFoundError('Contact does not exist')
 
 
 
