@@ -1,22 +1,25 @@
-import json
 import csv
 from exceptions.custom_exceptions import DuplicateContactError, ContactNotFoundError
 from validators.validators import validate_name, validate_email, validate_address, validate_phone, validate_fields
 from storage.file_operations import get_contacts, save_contacts
+
 class ContactBook():
     def __init__(self):
         self.contacts = []
 
     def load_contacts(self):
-        self.contacts = get_contacts()
+        try:
+            self.contacts = get_contacts()
+        except FileNotFoundError:
+            return []
         
     def list_contacts(self):
         """list all contacts"""
-        result = ''
+        result = []
         for contact in self.contacts:
             data = f'Name: {contact["name"]}, Email: {contact["email"]}, Phone: {contact["phone"]}, Address: {contact["address"]}\n'
-            result += data
-        return result
+            result.append(data)
+        return " ".join(result)
     
     def add_contact(self, contact):
         """add contact to contact list"""
@@ -79,7 +82,19 @@ class ContactBook():
                 return contact               
         raise ContactNotFoundError('Contact does not exist')
 
+    def delete_contact(self, name, phone):
+        """
+        Delete a contact by name and phone.
+        Raises ContactNotFoundError if no matching contact is found.
+        """
+        initial_count = len(self.contacts)
+        self.contacts = [c for c in self.contacts if not (c["name"] == name and c["phone"] == phone)]
 
+        if len(self.contacts) == initial_count:
+            raise ContactNotFoundError('Contact does not exist')
+
+        save_contacts(self.contacts)
+        return f"Contact {name} ({phone}) deleted successfully"
 
 contact = ContactBook()
 contact.load_contacts()
