@@ -1,18 +1,27 @@
 import json
+
+
 def get_contacts(filename="data/data.json"):
     """
-    load all contacts
+    Load and return all contacts from JSON file.
+    Raises FileNotFoundError or JSONDecodeError on failure.
     """
-    try:
-        with open(filename) as f:
-            data = json.load(f)
-            return data
-    except FileNotFoundError:
-        data = []
+    with open(filename, 'r') as f:
+        data = json.load(f)
+
+        if not isinstance(data, list):
+            raise ValueError("Data format invalid: expected a list of contacts")
+
         return data
-    except json.JSONDecodeError:
-        return 'Invalid JSON file'
-        
-def save_contacts(obj, filename="data/data.json"):
+
+
+def save_contacts(contacts, filename="data/data.json"):
+    """
+    Save all contacts to JSON file.
+    Overwrites existing file.
+    """
+    if not isinstance(contacts, list):
+        raise ValueError("Contacts must be a list")
+
     with open(filename, 'w') as f:
-       json.dump(obj, f, indent=4)
+        json.dump(contacts, f, indent=4)
