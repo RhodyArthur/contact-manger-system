@@ -1,24 +1,14 @@
 import json
 import csv
 from exceptions.custom_exceptions import DuplicateContactError, ContactNotFoundError
-from validators.validators import validate_name, validate_email, validate_address, validate_phone
+from validators.validators import validate_name, validate_email, validate_address, validate_phone, validate_fields
+from storage.file_operations import get_contacts, save_contacts
 class ContactBook():
     def __init__(self):
         self.contacts = []
 
     def load_contacts(self):
-        """
-        load all contacts
-        """
-        try:
-            with open('data/data.json') as f:
-                self.contacts = json.load(f)
-                return self.contacts
-        except FileNotFoundError:
-            self.contacts = []
-            return self.contacts
-        except json.JSONDecodeError:
-            return 'Invalid JSON file'
+        self.contacts = get_contacts()
         
     def list_contacts(self):
         """list all contacts"""
@@ -37,8 +27,7 @@ class ContactBook():
         validate_fields(contact["name"], contact["email"], contact["phone"], contact["address"])
         self.contacts.append(contact)
 
-        with open('data/data.json', 'w') as f:
-            json.dump(self.contacts, f, indent=4)
+        save_contacts(self.contacts)
         return contact
 
 
@@ -86,11 +75,8 @@ class ContactBook():
                         raise ValueError("Address must be at least 3 characters")
                     contact["address"] = new_address
 
-                with open('data/data.json', 'w') as f:
-                    json.dump(self.contacts, f, indent=4)
-                return contact
-
-                
+                save_contacts(self.contacts)
+                return contact               
         raise ContactNotFoundError('Contact does not exist')
 
 
