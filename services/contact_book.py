@@ -1,8 +1,7 @@
 import json
 import csv
 from exceptions.custom_exceptions import DuplicateContactError, ContactNotFoundError
-from validators.validators import validate_fields
-
+from validators.validators import validate_name, validate_email, validate_address, validate_phone
 class ContactBook():
     def __init__(self):
         self.contacts = []
@@ -67,11 +66,31 @@ class ContactBook():
         
         for contact in self.contacts:
             if name == contact.get("name") and phone == contact.get("phone"):
-                validate_fields(name, email, phone, address)
-                contact["name"] = contact["name"] or  name
-                contact["email"] = contact["email"] | email
-                contact["phone"] = contact["phone"] | phone
-                contact["address"] = contact["address"] | address
+                if new_name:
+                    if not validate_name(new_name):
+                        raise ValueError("Name must be 2 or more characters")
+                    contact["name"] = new_name
+
+                if new_email:
+                    if not validate_email(new_email):
+                        raise ValueError("Invalid email format")
+                    contact["email"] = new_email
+
+                if new_phone:
+                    if not validate_phone(new_phone):
+                        raise ValueError("Invalid phone number format")
+                    contact["phone"] = new_phone
+
+                if new_address:
+                    if not validate_address(new_address):
+                        raise ValueError("Address must be at least 3 characters")
+                    contact["address"] = new_address
+
+                with open('data/data.json', 'w') as f:
+                    json.dump(self.contacts, f, indent=4)
+                return contact
+
+                
         raise ContactNotFoundError('Contact does not exist')
 
 
