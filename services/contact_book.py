@@ -82,19 +82,19 @@ class ContactBook():
                 return contact               
         raise ContactNotFoundError('Contact does not exist')
 
-    def delete_contact(self, name):
+    def delete_contact(self, name, phone):
         """
-        Delete a contact by name.
+        Delete a contact by name and phone.
         Raises ContactNotFoundError if no matching contact is found.
         """
         initial_count = len(self.contacts)
-        self.contacts = [c for c in self.contacts if c["name"] != name]
+        self.contacts = [c for c in self.contacts if not (c["name"] == name and c["phone"] == phone)]
 
         if len(self.contacts) == initial_count:
             raise ContactNotFoundError('Contact does not exist')
 
         save_contacts(self.contacts)
-        return f"Contact {name} ({contact["phone"]}) deleted successfully"
+        return f"Contact {name} ({phone}) deleted successfully"
 
 contact = ContactBook()
 contact.load_contacts()
