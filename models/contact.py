@@ -26,7 +26,7 @@ class Contact:
             phone=data["phone"],
             address= data["address"])
     
-    def update(self, new_name, new_email, new_phone, new_address):
+    def update(self, new_name=None, new_email=None, new_phone=None, new_address=None):
         if new_name:
             if not validate_name(new_name):
                 raise ValueError("Name must be 2 or more characters")
