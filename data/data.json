@@ -1,20 +1,26 @@
 [
-{
-"name": "Alice Johnson",
-"email": "alice.johnson@example.com",
-"phone": "+1234567890",
-"address": "123 Main St, Springfield"
-},
-{
-"name": "Bob Smith",
-"email": "bob.smith@example.com",
-"phone": "+1987654321",
-"address": "456 Elm St, Shelbyville"
-},
-{
-"name": "Carol Lee",
-"email": "carol.lee@example.com",
-"phone": "+1122334455",
-"address": "789 Oak St, Capital City"
-}
+    {
+        "name": "Alice Johnson",
+        "email": "alice.johnson@example.com",
+        "phone": "+1234567890",
+        "address": "123 Main St, Springfield"
+    },
+    {
+        "name": "Bob Smith",
+        "email": "bob.smith@example.com",
+        "phone": "+1987654321",
+        "address": "456 Elm St, Shelbyville"
+    },
+    {
+        "name": "Carol Lee",
+        "email": "carol.lee@example.com",
+        "phone": "+1122334455",
+        "address": "789 Oak St, Capital City"
+    },
+    {
+        "name": "Rhoda Arthur",
+        "email": "rhodaarthur48@gmail.com",
+        "phone": "0241234567",
+        "address": "Ws-059-9901"
+    }
 ]
