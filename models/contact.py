@@ -1,4 +1,4 @@
-from validators.validators import validate_fields
+from validators.validators import validate_fields, validate_name, validate_email, validate_address, validate_phone
 
 class Contact:
     def __init__(self, name: str, email: str, phone: str, address: str):
@@ -13,7 +13,7 @@ class Contact:
         return {
             "name": self.name,
             "email": self.email,
-            "phone": self.email,
+            "phone": self.phone,
             "address": self.address
         }
     
@@ -25,6 +25,27 @@ class Contact:
             email=data["email"],
             phone=data["phone"],
             address= data["address"])
+    
+    def update(self, new_name, new_email, new_phone, new_address):
+        if new_name:
+            if not validate_name(new_name):
+                raise ValueError("Name must be 2 or more characters")
+            self.name = new_name
+
+        if new_email:
+            if not validate_email(new_email):
+                raise ValueError("Invalid email format")
+            self.email = new_email
+
+        if new_phone:
+            if not validate_phone(new_phone):
+                raise ValueError("Invalid phone number format")
+            self.phone = new_phone
+
+        if new_address:
+            if not validate_address(new_address):
+                raise ValueError("Address must be at least 3 characters")
+            self.address = new_address
         
     def __str__(self):
         """Human-readable representation"""
