@@ -2,42 +2,43 @@ import csv
 from exceptions.custom_exceptions import DuplicateContactError, ContactNotFoundError
 from validators.validators import validate_name, validate_email, validate_address, validate_phone, validate_fields
 from storage.file_operations import get_contacts, save_contacts
+from models.contact import Contact
 
-class ContactBook():
+class ContactBook:
     def __init__(self):
         self.contacts = []
 
     def load_contacts(self):
         try:
-            self.contacts = get_contacts()
+            self.contacts = [Contact.from_dict(contact) for contact in get_contacts()]
         except FileNotFoundError:
-            return []
+            self.contacts = []
         
     def list_contacts(self):
         """list all contacts"""
         result = []
         for contact in self.contacts:
-            data = f'Name: {contact["name"]}, Email: {contact["email"]}, Phone: {contact["phone"]}, Address: {contact["address"]}\n'
+            data = f'Name: {contact.name}, Email: {contact.email}, Phone: {contact.phone}, Address: {contact.address}\n'
             result.append(data)
         return " ".join(result)
     
-    def add_contact(self, contact):
+    def add_contact(self, contact: Contact):
         """add contact to contact list"""
         for c in self.contacts:
-            if contact["name"] == c["name"] and contact["phone"] == c["phone"]:
+            if contact.name == c.name and contact.phone == c.phone:
                 raise DuplicateContactError("Contact already exist")
         
-        validate_fields(contact["name"], contact["email"], contact["phone"], contact["address"])
+        validate_fields(contact.name, contact.email, contact.phone, contact.address)
         self.contacts.append(contact)
 
-        save_contacts(self.contacts)
+        save_contacts([c.to_dict() for c in self.contacts])
         return contact
 
 
-    def search_contact_by_name(self, name=None, phone=None):
+    def search_contact  (self, name=None, phone=None):
         result = []
         for contact in self.contacts:
-            if name.lower() in contact.get('name').lower() or phone in contact.get('phone'):
+            if name.lower() in contact.name.lower() or phone in contact.phone:
                 result.append(contact)
 
         if len(result) == 0:
@@ -57,28 +58,28 @@ class ContactBook():
     def update_contact(self, name, phone, new_name=None, new_email=None, new_phone=None, new_address=None):
         
         for contact in self.contacts:
-            if name == contact.get("name") and phone == contact.get("phone"):
+            if name == contact.name and phone == contact.phone:
                 if new_name:
                     if not validate_name(new_name):
                         raise ValueError("Name must be 2 or more characters")
-                    contact["name"] = new_name
+                    contact.name = new_name
 
                 if new_email:
                     if not validate_email(new_email):
                         raise ValueError("Invalid email format")
-                    contact["email"] = new_email
+                    contact.email = new_email
 
                 if new_phone:
                     if not validate_phone(new_phone):
                         raise ValueError("Invalid phone number format")
-                    contact["phone"] = new_phone
+                    contact.phone = new_phone
 
                 if new_address:
                     if not validate_address(new_address):
                         raise ValueError("Address must be at least 3 characters")
-                    contact["address"] = new_address
+                    contact.address = new_address
 
-                save_contacts(self.contacts)
+                save_contacts([c.to_dict() for c in self.contacts])
                 return contact               
         raise ContactNotFoundError('Contact does not exist')
 
@@ -88,14 +89,10 @@ class ContactBook():
         Raises ContactNotFoundError if no matching contact is found.
         """
         initial_count = len(self.contacts)
-        self.contacts = [c for c in self.contacts if not (c["name"] == name and c["phone"] == phone)]
+        self.contacts = [c for c in self.contacts if not (c.name == name and c.phone == phone)]
 
         if len(self.contacts) == initial_count:
             raise ContactNotFoundError('Contact does not exist')
 
-        save_contacts(self.contacts)
+        save_contacts([c.to_dict() for c in self.contacts])
         return f"Contact {name} ({phone}) deleted successfully"
-
-contact = ContactBook()
-contact.load_contacts()
-print(contact.list_contacts())
