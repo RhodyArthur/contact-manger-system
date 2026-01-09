@@ -1,5 +1,6 @@
 from services.contact_book import ContactBook
 from exceptions.custom_exceptions import DuplicateContactError, ContactNotFoundError
+from models.contact import Contact
 
 def main():
     book = ContactBook()
@@ -27,7 +28,7 @@ def main():
             address = input("Address: ").strip()
 
             try:
-                book.add_contact({"name": name, "email": email, "phone": phone, "address": address})
+                book.add_contact(Contact(name, email, phone, address))
                 print("Contact added successfully!")
             except DuplicateContactError as e:
                 print(f"Error: {e}")
@@ -36,12 +37,11 @@ def main():
 
         elif choice == "3":
             name = input("Search by name (leave empty if not needed): ").strip()
-            phone = input("Search by phone (leave empty if not needed): ").strip()
 
             try:
-                results = book.search_contact_by_name(name=name, phone=phone)
+                results = book.search_contact_by_name(name=name)
                 for contact in results:
-                    print(f'Name: {contact["name"]}, Email: {contact["email"]}, Phone: {contact["phone"]}, Address: {contact["address"]}')
+                    print(f'Name: {contact.name}, Email: {contact.email}, Phone: {contact.phone}, Address: {contact.address}')
             except ContactNotFoundError as e:
                 print(f"Error: {e}")
 
